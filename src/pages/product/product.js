@@ -1,6 +1,18 @@
 import '/src/pages/product/product.css';
-import { tiger, insertLast, getPbImageURL, comma } from '/src/lib';
+import {
+  tiger,
+  insertLast,
+  getPbImageURL,
+  comma,
+  setStorage,
+  getStorage,
+} from '/src/lib';
 import gsap from 'gsap';
+import defaultAuthData from '/src/api/defaultAuthData';
+
+if (!localStorage.getItem('auth')) {
+  setStorage('auth', defaultAuthData);
+}
 
 async function renderProduct() {
   const response = await tiger.get(
@@ -9,11 +21,17 @@ async function renderProduct() {
 
   const userData = response.data.items;
 
+  const { isAuth } = await getStorage('auth');
+
   userData.forEach((item) => {
     const ratio = item.price * (item.discount * 0.01);
     const template = /* html */ `
     <li class="product-item">
-          <a href="/">
+      <a href="${
+        !isAuth
+          ? '/src/pages/login/'
+          : `/src/pages/detail/index.html#${item.id}`
+      }">
             <figure>
               <img src="${getPbImageURL(item)}" alt="" />
             </figure>
