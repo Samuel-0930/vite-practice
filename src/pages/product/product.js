@@ -1,22 +1,41 @@
 import '/src/pages/product/product.css';
-import { tiger, insertLast } from '/src/lib';
+import { tiger, insertLast, getPbImageURL } from '/src/lib';
+import gsap from 'gsap';
 
 async function renderProduct() {
   const response = await tiger.get(
-    'http://127.0.0.1:8090/api/collections/cards/records'
+    `${import.meta.env.VITE_PB_API}/collections/products/records`
   );
 
-  const datas = response.data.items;
+  const userData = response.data.items;
 
-  datas.forEach((item) => {
+  userData.forEach((item) => {
+    const ratio = item.price * (item.discount * 0.01);
     const template = /* html */ `
-    <div>
-      <span>Name : ${item.name}<br></span>
-      <span>Message : ${item.message}<br></span>
-    </div>
+    <li class="product-item">
+          <a href="/">
+            <figure>
+              <img src="${getPbImageURL(item)}" alt="" />
+            </figure>
+            <span class="brand">${item.brand}</span>
+            <span class="desc"
+              >${item.description}</span
+            >
+            <span class="price">${item.price}</span>
+            <div>
+              <span class="discount">${item.discount}%</span>
+              <span class="real-price">${item.price - ratio}원</span>
+            </div>
+          </a>
+        </li>
     `;
 
-    insertLast('.container', template);
+    insertLast('.container ul', template);
+  });
+  gsap.from('.product-item', {
+    y: 30,
+    opacity: 0,
+    stagger: 0.05,
   });
 }
 
