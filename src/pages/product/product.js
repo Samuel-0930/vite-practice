@@ -1,5 +1,5 @@
 import '/src/pages/product/product.css';
-import { tiger, insertLast, getPbImageURL } from '/src/lib';
+import { tiger, insertLast, getPbImageURL, comma } from '/src/lib';
 import gsap from 'gsap';
 
 async function renderProduct() {
@@ -21,10 +21,10 @@ async function renderProduct() {
             <span class="desc"
               >${item.description}</span
             >
-            <span class="price">${item.price}</span>
+            <span class="price">${comma(item.price)}</span>
             <div>
               <span class="discount">${item.discount}%</span>
-              <span class="real-price">${item.price - ratio}원</span>
+              <span class="real-price">${comma(item.price - ratio)}원</span>
             </div>
           </a>
         </li>
@@ -32,6 +32,7 @@ async function renderProduct() {
 
     insertLast('.container ul', template);
   });
+
   gsap.from('.product-item', {
     y: 30,
     opacity: 0,
